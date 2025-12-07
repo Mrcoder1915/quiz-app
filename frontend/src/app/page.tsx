@@ -21,18 +21,27 @@ export default function QuizPage() {
   const [submitting, setSubmitting] = useState(false)
   const [result, setResult] = useState<{score:number,total:number,results:Result[]} | null>(null)
   
-  useEffect(() => {
-    setLoading(true)
-    setError(null)
-    fetch(`http://127.0.0.1:8787/api/quiz`)
-      .then(async res => {
-        if (!res.ok) throw new Error(await res.text())
-        return res.json()
-      })
-      .then(setQuestions)
-      .catch((e) => setError(String(e)))
-      .finally(() => setLoading(false))
-  }, [])
+useEffect(() => {
+  const loadQuiz = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+
+      const res = await fetch("https://quiz-api.quiz-app-sam.workers.dev/api/quiz")
+
+      if (!res.ok) throw new Error(await res.text())
+
+      const data = await res.json()
+      setQuestions(data)
+    } catch (err: any) {
+      setError(String(err))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  loadQuiz()
+}, [])
 
   function setAnswer(id: string|number, value:any){
     setAnswers(prev => ({...prev, [String(id)]: value}))
@@ -46,7 +55,7 @@ export default function QuizPage() {
       quizIds: questions.map(q => q.id)
     }
     try {
-      const res = await fetch('http://127.0.0.1:8787/api/grade', {
+      const res = await fetch('https://quiz-api.quiz-app-sam.workers.dev/api/grade', {
         method: 'POST',
         headers: {'content-type':'application/json'},
         body: JSON.stringify(payload)
