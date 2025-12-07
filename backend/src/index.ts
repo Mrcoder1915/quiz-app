@@ -70,7 +70,8 @@ const AnswerSchema  = z.object({
 })
 
 const GradeRequestSchema  = z.object({
-  answers: z.array(AnswerSchema)
+  answers: z.array(AnswerSchema),
+  quizIds: z.array(z.number())
 })
 
 // api get random questions
@@ -94,14 +95,17 @@ app.post('/api/grade', async (ctx) => {
     if (!parsed.success) {
       return ctx.json({ error: 'Invalid payload' }, 400)
     }
-    const { answers } = parsed.data
+    const { answers, quizIds  } = parsed.data
+
+      const questionsToGrade = QUESTIONS.filter(q => quizIds.includes(q.id))
+    const orderedQuestions = quizIds.map(id => questionsToGrade.find(q => q.id === id)!)
 
     // grading
     const results: { id: string|number, correct: boolean }[] = []
     let score = 0
-    let total = QUESTIONS.length
+    let total = orderedQuestions.length
 
-    for (const question of QUESTIONS) {
+    for (const question of orderedQuestions) {
       const ans = answers.find(ans => String(ans.id) === String(question.id))
       let correct = false
 

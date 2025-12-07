@@ -24,7 +24,7 @@ export default function QuizPage() {
   useEffect(() => {
     setLoading(true)
     setError(null)
-    fetch(`https://quiz-api.quiz-app-sam.workers.dev/api/quiz`)
+    fetch(`http://127.0.0.1:8787/api/quiz`)
       .then(async res => {
         if (!res.ok) throw new Error(await res.text())
         return res.json()
@@ -42,10 +42,11 @@ export default function QuizPage() {
     if(!questions) return
     setSubmitting(true)
     const payload = {
-      answers: Object.entries(answers).map(([id, value]) => ({ id, value }))
+      answers: Object.entries(answers).map(([id, value]) => ({ id, value })),
+      quizIds: questions.map(q => q.id)
     }
     try {
-      const res = await fetch('https://quiz-api.quiz-app-sam.workers.dev/api/grade', {
+      const res = await fetch('http://127.0.0.1:8787/api/grade', {
         method: 'POST',
         headers: {'content-type':'application/json'},
         body: JSON.stringify(payload)
@@ -166,7 +167,7 @@ export default function QuizPage() {
                   key={String(r.id)}
                   className={`px-3 py-1 rounded ${r.correct ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
                 >
-                   Question {index + 1}: {r.correct ? 'Correct' : 'Incorrect'}
+                  Question {index + 1}: {r.correct ? 'Correct' : 'Incorrect'}
                 </li>
               ))}
             </ul>
