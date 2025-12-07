@@ -14,12 +14,10 @@ A small quiz application demonstrating end-to-end functionality:
 3. Dev
    - Frontend: `npm run dev` (Next.js)
    - Backend: `wrangler dev` (Cloudflare Worker)
-4. Tests: `npm run test` (in root where vitest configured)
 
 ## Architecture notes
 - **Backend**: runs on Cloudflare Workers (edge). Uses Hono + zod for validation. Reason: Workers give cheap global edge functions and Hono is lightweight.
 - **Frontend**: Next.js App Router for modern routing and server/client components. Client actions (quiz UI) are client components.
-- **Shared**: grading logic extracted into `lib/grade.ts` and unit-tested (Vitest).
 
 ## Validation approach
 - `zod` validates input shape for `POST /api/grade`. Invalid payloads return `400`.
