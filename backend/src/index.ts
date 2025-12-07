@@ -4,14 +4,25 @@ import { z } from 'zod'
 
 const app = new Hono()
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://quiz-app-one-lyart.vercel.app",
+]
+
 app.use('*', async (c, next) => {
-  const origin = "http://localhost:3000"
-  c.header('Access-Control-Allow-Origin', origin)
+  const requestOrigin = c.req.header('Origin') || ''
+  
+  if (allowedOrigins.includes(requestOrigin)) {
+    c.header('Access-Control-Allow-Origin', requestOrigin)
+  }
+  
   c.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
   c.header('Access-Control-Allow-Headers', 'Content-Type')
+  
   if (c.req.method === 'OPTIONS') {
-     return c.json("ok")
+    return c.json("ok")
   }
+  
   await next()
 })
 
