@@ -161,12 +161,12 @@ export default function QuizPage() {
 
             <div className="text-lg mb-3 text-gray-700">Score: <span className="font-bold">{result.score}</span> / {result.total}</div>
             <ul className="space-y-2">
-              {result.results.map(r => (
+              {result.results.map((r, index) => (
                 <li
                   key={String(r.id)}
                   className={`px-3 py-1 rounded ${r.correct ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
                 >
-                  Question {r.id}: {r.correct ? 'Correct' : 'Incorrect'}
+                   Question {index + 1}: {r.correct ? 'Correct' : 'Incorrect'}
                 </li>
               ))}
             </ul>
